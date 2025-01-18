@@ -1,6 +1,5 @@
-# Script for labeling messages in CoNLL format
-
 import json
+import re
 
 # Load processed data
 with open('data/processed/preprocessed_telegram_data.json', 'r', encoding='utf-8') as f:
@@ -10,23 +9,29 @@ with open('data/processed/preprocessed_telegram_data.json', 'r', encoding='utf-8
 def label_message(message):
     tokens = message['text'].split()
     labeled_tokens = []
+
     for token in tokens:
-        if "ተሸጋጭ" in token:  # Example condition for product names
-            labeled_tokens.append(f"{token} B-Product")
-        elif "በብር" in token:  # Example condition for prices
+        # Example conditions for labeling
+        if re.search(r"\d+ብር", token):  # Price detection
             labeled_tokens.append(f"{token} B-PRICE")
+        elif "አዲስ" in token or "ቦሌ" in token:  # Location keywords
+            labeled_tokens.append(f"{token} B-LOC")
+        elif "ሱሪ" in token or "ኮፍያ" in token:  # Product-related words
+            labeled_tokens.append(f"{token} B-Product")
         else:
-            labeled_tokens.append(f"{token} O")
+            labeled_tokens.append(f"{token} O")  # Outside any entity
+    
     return labeled_tokens
 
 # Label data
 labeled_data = []
 for msg in processed_data[:30]:  # Label only 30 messages as an example
     labeled_tokens = label_message(msg)
-    labeled_data.append("\n".join(labeled_tokens) + "\n")
+    labeled_data.append("\n".join(labeled_tokens) + "\n\n")  # Separate messages with blank lines
 
-# Save to file
-with open('data/samples/labeled_data.conll', 'w', encoding='utf-8') as f:
+# Save labeled data in CoNLL format
+output_file = 'data/samples/labeled_data.conll'
+with open(output_file, 'w', encoding='utf-8') as f:
     f.writelines(labeled_data)
 
-print("Data labeling complete.")
+print(f"Labeled data saved in CoNLL format at: {output_file}")

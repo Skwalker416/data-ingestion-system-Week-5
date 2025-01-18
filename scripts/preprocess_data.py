@@ -1,5 +1,3 @@
-# Script for preprocessing text
-
 import json
 import re
 
@@ -7,24 +5,25 @@ import re
 with open('data/raw/telegram_data.json', 'r', encoding='utf-8') as f:
     raw_data = json.load(f)
 
-# Preprocessing function
-def preprocess_message(message):
-    text = message.get('text', '')
-    # Remove URLs
-    text = re.sub(r"http\S+|www\S+", "", text)
-    # Normalize text (e.g., whitespace, punctuation)
-    text = re.sub(r"\s+", " ", text).strip()
+# Preprocess a single message
+def preprocess_message(msg):
+    text = msg.get('text', '')  # Default to an empty string if 'text' is None
+    text = re.sub(r"http\S+|www\S+", "", text)  # Remove URLs
+    text = re.sub(r"[^\w\s]", "", text)  # Remove punctuation
+    text = re.sub(r"\s+", " ", text).strip()  # Normalize whitespace
+
     return {
-        'channel': message['channel'],
+        'channel': msg.get('channel'),
+        'sender': msg.get('sender'),
         'text': text,
-        'timestamp': message['timestamp']
+        'timestamp': msg.get('timestamp')
     }
 
-# Apply preprocessing
+# Preprocess all messages
 processed_data = [preprocess_message(msg) for msg in raw_data]
 
 # Save processed data
 with open('data/processed/preprocessed_telegram_data.json', 'w', encoding='utf-8') as f:
     json.dump(processed_data, f, ensure_ascii=False, indent=4)
 
-print("Data preprocessing complete.")
+print("Preprocessed data saved successfully!")

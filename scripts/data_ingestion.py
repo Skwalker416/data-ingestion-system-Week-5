@@ -26,16 +26,23 @@ if not client.is_user_authorized():
 # Fetch and save messages
 messages = []
 for channel in CHANNELS:
+    print(f"Fetching messages from channel: {channel}")
     for message in client.iter_messages(channel, limit=100):
-        messages.append({
-            'channel': channel,
-            'sender': message.sender_id,
-            'text': message.text,
-            'timestamp': message.date.isoformat()  # Convert datetime to string
-        })
+        if message.text:  # Skip messages with no text
+            messages.append({
+                'channel': channel,
+                'sender': message.sender_id,
+                'text': message.text,
+                'timestamp': message.date.isoformat()  # Convert datetime to string
+            })
+
+# Log the number of messages fetched
+print(f"Total messages fetched: {len(messages)}")
 
 # Save to file
-with open('data/raw/telegram_data.json', 'w', encoding='utf-8') as f:
-    json.dump(messages, f, ensure_ascii=False, indent=4)
-
-print("Data successfully scraped and saved.")
+try:
+    with open('data/raw/telegram_data.json', 'w', encoding='utf-8') as f:
+        json.dump(messages, f, ensure_ascii=False, indent=4)
+    print("Data successfully saved to data/raw/telegram_data.json.")
+except Exception as e:
+    print(f"Error saving data: {e}")
