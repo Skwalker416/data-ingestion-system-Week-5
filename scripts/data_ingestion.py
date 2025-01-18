@@ -1,5 +1,3 @@
-# Script for scraping data from Telegram
-
 from telethon.sync import TelegramClient
 import json
 
@@ -33,7 +31,7 @@ for channel in CHANNELS:
             'channel': channel,
             'sender': message.sender_id,
             'text': message.text,
-            'timestamp': message.date
+            'timestamp': message.date.isoformat()  # Convert datetime to string
         })
 
 # Save to file
