@@ -1,9 +1,9 @@
 # week-5
+# Configuration
 1. git clone https://github.com/Skwalker416/week-5.git
 2.  Create a Telegram App
 Go to Telegram's API Authorization page.
 Create a new application to get your api_id and api_hash.
-# Configuration
 API_ID = 'your_api_id'
 API_HASH = 'your_api_hash'
 PHONE_NUMBER = 'your_phone_number'
