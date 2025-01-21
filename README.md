@@ -123,6 +123,6 @@ To develop and fine-tune an NER model that can:
 ## **Contact**
 For questions or collaborations, feel free to contact:  
 **Amanuel Legesse**  
-[Insert Your Email]
+ese.amanuel.legesse@gmail.com
 
 ---
